@@ -1,0 +1,1246 @@
+.contenedor {
+    min-height: 100vh;
+    padding: 94px 24px 24px 24px;
+    background-color: #f9fafb;
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .contenedor {
+    background-color: #0a0a0a;
+}
+
+.header {
+    max-width: 1600px;
+    margin: 0 auto 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.titulo {
+    font-size: 32px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0 0 4px 0;
+}
+
+[data-theme="dark"] .titulo {
+    color: #ffffff;
+}
+
+.subtitulo {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+[data-theme="dark"] .subtitulo {
+    color: #9ca3af;
+}
+
+.botonCrearUsuario {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: #000000;
+    border: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonCrearUsuario {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.botonCrearUsuario ion-icon {
+    font-size: 22px;
+}
+
+.botonCrearUsuario:hover {
+    background-color: #1f2937;
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .botonCrearUsuario:hover {
+    background-color: #e5e7eb;
+}
+
+.controles {
+    max-width: 1600px;
+    margin: 0 auto 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.buscador {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 0 16px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .buscador {
+    background-color: #1a1a1a;
+    border-color: #2d2d2d;
+}
+
+.buscador:focus-within {
+    border-color: #3b82f6;
+}
+
+.buscador ion-icon {
+    font-size: 22px;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .buscador ion-icon {
+    color: #6b7280;
+}
+
+.inputBusqueda {
+    flex: 1;
+    padding: 14px 12px;
+    background: none;
+    border: none;
+    font-size: 15px;
+    color: #1f2937;
+    outline: none;
+}
+
+[data-theme="dark"] .inputBusqueda {
+    color: #f3f4f6;
+}
+
+.inputBusqueda::placeholder {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .inputBusqueda::placeholder {
+    color: #6b7280;
+}
+
+.botonLimpiar {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .botonLimpiar {
+    color: #9ca3af;
+}
+
+.botonLimpiar ion-icon {
+    font-size: 20px;
+}
+
+.botonLimpiar:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+[data-theme="dark"] .botonLimpiar:hover {
+    background-color: #2d2d2d;
+    color: #f3f4f6;
+}
+
+.filtros {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filtroBoton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: #ffffff;
+    border: 2px solid #e5e7eb;
+    color: #4b5563;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .filtroBoton {
+    background-color: #1a1a1a;
+    border-color: #2d2d2d;
+    color: #d1d5db;
+}
+
+.filtroBoton ion-icon {
+    font-size: 20px;
+}
+
+.filtroBoton:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.filtroBoton.filtroActivo {
+    background-color: #000000;
+    border-color: #000000;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .filtroBoton.filtroActivo {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #000000;
+}
+
+.cargando {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 400px;
+    color: #6b7280;
+}
+
+[data-theme="dark"] .cargando {
+    color: #9ca3af;
+}
+
+.cargando ion-icon {
+    font-size: 48px;
+    animation: rotar 2s linear infinite;
+}
+
+@keyframes rotar {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.cargando p {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.contenidoTabla {
+    max-width: 1600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .contenidoTabla {
+    background-color: #1a1a1a;
+    border-color: #2d2d2d;
+}
+
+.vacio {
+    padding: 80px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .vacio {
+    color: #6b7280;
+}
+
+.vacio ion-icon {
+    font-size: 64px;
+}
+
+.vacio p {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.botonSecundario {
+    padding: 10px 20px;
+    background: none;
+    border: 2px solid #e5e7eb;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+[data-theme="dark"] .botonSecundario {
+    border-color: #2d2d2d;
+    color: #f3f4f6;
+}
+
+.botonSecundario:hover {
+    background-color: #f3f4f6;
+}
+
+[data-theme="dark"] .botonSecundario:hover {
+    background-color: #2d2d2d;
+}
+
+.tablaWrapper {
+    overflow-x: auto;
+}
+
+.tabla {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla thead {
+    background-color: #f9fafb;
+}
+
+[data-theme="dark"] .tabla thead {
+    background-color: #0a0a0a;
+}
+
+.tabla th {
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .tabla th {
+    color: #9ca3af;
+}
+
+.tabla tbody tr {
+    border-top: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .tabla tbody tr {
+    border-top-color: #2d2d2d;
+}
+
+.tabla tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+[data-theme="dark"] .tabla tbody tr:hover {
+    background-color: #0a0a0a;
+}
+
+.tabla td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #1f2937;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .tabla td {
+    color: #f3f4f6;
+}
+
+.usuarioCell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 10px;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.avatar ion-icon {
+    font-size: 22px;
+}
+
+.nombreUsuario {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 14px;
+}
+
+[data-theme="dark"] .nombreUsuario {
+    color: #f3f4f6;
+}
+
+.emailUsuario {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+[data-theme="dark"] .emailUsuario {
+    color: #9ca3af;
+}
+
+.licenciasInfo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.verLicencias {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid #e5e7eb;
+    color: #3b82f6;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .verLicencias {
+    border-color: #2d2d2d;
+}
+
+.verLicencias ion-icon {
+    font-size: 18px;
+}
+
+.verLicencias:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+}
+
+[data-theme="dark"] .verLicencias:hover {
+    background-color: #1e3a8a;
+}
+
+.estadoBadge {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+.activa {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+[data-theme="dark"] .activa {
+    background-color: #064e3b;
+    color: #6ee7b7;
+}
+
+.inactiva {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+[data-theme="dark"] .inactiva {
+    background-color: #374151;
+    color: #d1d5db;
+}
+
+.sinLicencia {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+[data-theme="dark"] .sinLicencia {
+    background-color: #78350f;
+    color: #fde68a;
+}
+
+.acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.botonCrear {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background-color: #dbeafe;
+    border: none;
+    color: #1e40af;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+[data-theme="dark"] .botonCrear {
+    background-color: #1e3a8a;
+    color: #93c5fd;
+}
+
+.botonCrear ion-icon {
+    font-size: 18px;
+}
+
+.botonCrear:hover {
+    background-color: #bfdbfe;
+}
+
+[data-theme="dark"] .botonCrear:hover {
+    background-color: #1e40af;
+}
+
+.botonEditar {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fef3c7;
+    border: none;
+    color: #92400e;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonEditar {
+    background-color: #78350f;
+    color: #fde68a;
+}
+
+.botonEditar ion-icon {
+    font-size: 20px;
+}
+
+.botonEditar:hover {
+    background-color: #fde68a;
+}
+
+[data-theme="dark"] .botonEditar:hover {
+    background-color: #92400e;
+}
+
+.botonAccion {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.botonAccion ion-icon {
+    font-size: 20px;
+}
+
+.botonAccion:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.botonActivar {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+[data-theme="dark"] .botonActivar {
+    background-color: #064e3b;
+    color: #6ee7b7;
+}
+
+.botonActivar:hover:not(:disabled) {
+    background-color: #a7f3d0;
+}
+
+[data-theme="dark"] .botonActivar:hover:not(:disabled) {
+    background-color: #047857;
+}
+
+.botonDesactivar {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+[data-theme="dark"] .botonDesactivar {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+}
+
+.botonDesactivar:hover:not(:disabled) {
+    background-color: #fecaca;
+}
+
+[data-theme="dark"] .botonDesactivar:hover:not(:disabled) {
+    background-color: #991b1b;
+}
+
+.botonEliminar {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fee2e2;
+    border: none;
+    color: #991b1b;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonEliminar {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+}
+
+.botonEliminar ion-icon {
+    font-size: 20px;
+}
+
+.botonEliminar:hover {
+    background-color: #fecaca;
+}
+
+[data-theme="dark"] .botonEliminar:hover {
+    background-color: #991b1b;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    animation: slideUp 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+[data-theme="dark"] .modal {
+    background-color: #1a1a1a;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.modalEliminar {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 450px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    animation: slideUp 0.3s ease;
+}
+
+[data-theme="dark"] .modalEliminar {
+    background-color: #1a1a1a;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.modalHeader {
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+[data-theme="dark"] .modalHeader {
+    border-bottom-color: #2d2d2d;
+}
+
+.iconoAdvertencia {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fee2e2;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+}
+
+[data-theme="dark"] .iconoAdvertencia {
+    background-color: #7f1d1d;
+}
+
+.iconoAdvertencia ion-icon {
+    font-size: 32px;
+    color: #991b1b;
+}
+
+[data-theme="dark"] .iconoAdvertencia ion-icon {
+    color: #fca5a5;
+}
+
+.modalTitulo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+}
+
+[data-theme="dark"] .modalTitulo {
+    color: #ffffff;
+}
+
+.botonCerrarModal {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonCerrarModal {
+    color: #9ca3af;
+}
+
+.botonCerrarModal ion-icon {
+    font-size: 24px;
+}
+
+.botonCerrarModal:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+[data-theme="dark"] .botonCerrarModal:hover {
+    background-color: #2d2d2d;
+    color: #f3f4f6;
+}
+
+.modalBody {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.usuarioInfo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+}
+
+[data-theme="dark"] .usuarioInfo {
+    background-color: #0a0a0a;
+}
+
+.avatarGrande {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: 14px;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.avatarGrande ion-icon {
+    font-size: 32px;
+}
+
+.nombreGrande {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+[data-theme="dark"] .nombreGrande {
+    color: #f3f4f6;
+}
+
+.emailGrande {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+[data-theme="dark"] .emailGrande {
+    color: #9ca3af;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+[data-theme="dark"] .label {
+    color: #f3f4f6;
+}
+
+.input {
+    padding: 12px 16px;
+    background-color: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1f2937;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .input {
+    background-color: #0a0a0a;
+    border-color: #2d2d2d;
+    color: #f3f4f6;
+}
+
+.input:focus {
+    border-color: #3b82f6;
+    background-color: #ffffff;
+}
+
+[data-theme="dark"] .input:focus {
+    background-color: #1a1a1a;
+}
+
+.input::placeholder {
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .input::placeholder {
+    color: #6b7280;
+}
+
+.inputError {
+    border-color: #ef4444;
+}
+
+.mensajeError {
+    font-size: 12px;
+    color: #ef4444;
+    margin-top: 4px;
+}
+
+[data-theme="dark"] .mensajeError {
+    color: #fca5a5;
+}
+
+.opcionesLicencia {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.opcionBoton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px;
+    background-color: #ffffff;
+    border: 2px solid #e5e7eb;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .opcionBoton {
+    background-color: #0a0a0a;
+    border-color: #2d2d2d;
+    color: #f3f4f6;
+}
+
+.opcionBoton ion-icon {
+    font-size: 24px;
+    color: #6b7280;
+}
+
+[data-theme="dark"] .opcionBoton ion-icon {
+    color: #9ca3af;
+}
+
+.duracion {
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+[data-theme="dark"] .duracion {
+    color: #6b7280;
+}
+
+.opcionBoton:hover {
+    border-color: #3b82f6;
+    background-color: #f9fafb;
+}
+
+[data-theme="dark"] .opcionBoton:hover {
+    border-color: #3b82f6;
+    background-color: #1a1a1a;
+}
+
+.opcionBoton.opcionActiva {
+    background-color: #000000;
+    border-color: #000000;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .opcionBoton.opcionActiva {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #000000;
+}
+
+.opcionBoton.opcionActiva ion-icon {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .opcionBoton.opcionActiva ion-icon {
+    color: #000000;
+}
+
+.opcionBoton.opcionActiva .duracion {
+    color: #e5e7eb;
+}
+
+[data-theme="dark"] .opcionBoton.opcionActiva .duracion {
+    color: #374151;
+}
+
+.textoAdvertencia {
+    font-size: 15px;
+    color: #1f2937;
+    text-align: center;
+    margin: 0;
+    line-height: 1.6;
+}
+
+[data-theme="dark"] .textoAdvertencia {
+    color: #f3f4f6;
+}
+
+.textoAdvertenciaSecundario {
+    font-size: 13px;
+    color: #6b7280;
+    text-align: center;
+    margin: 0;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] .textoAdvertenciaSecundario {
+    color: #9ca3af;
+}
+
+.modalFooter {
+    padding: 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+[data-theme="dark"] .modalFooter {
+    border-top-color: #2d2d2d;
+}
+
+.botonCancelar {
+    padding: 10px 20px;
+    background: none;
+    border: 2px solid #e5e7eb;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonCancelar {
+    border-color: #2d2d2d;
+    color: #f3f4f6;
+}
+
+.botonCancelar:hover {
+    background-color: #f3f4f6;
+}
+
+[data-theme="dark"] .botonCancelar:hover {
+    background-color: #2d2d2d;
+}
+
+.botonConfirmar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #000000;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonConfirmar {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.botonConfirmar ion-icon {
+    font-size: 20px;
+}
+
+.botonConfirmar:hover:not(:disabled) {
+    background-color: #1f2937;
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .botonConfirmar:hover:not(:disabled) {
+    background-color: #e5e7eb;
+}
+
+.botonConfirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.botonEliminarConfirmar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #ef4444;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .botonEliminarConfirmar {
+    background-color: #dc2626;
+}
+
+.botonEliminarConfirmar ion-icon {
+    font-size: 20px;
+}
+
+.botonEliminarConfirmar:hover:not(:disabled) {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .botonEliminarConfirmar:hover:not(:disabled) {
+    background-color: #b91c1c;
+}
+
+.botonEliminarConfirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .contenedor {
+        padding: 88px 16px 24px 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .botonCrearUsuario {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .titulo {
+        font-size: 28px;
+    }
+
+    .filtros {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+    }
+
+    .filtroBoton {
+        flex-shrink: 0;
+    }
+
+    .opcionesLicencia {
+        grid-template-columns: 1fr;
+    }
+
+    .acciones {
+        flex-wrap: wrap;
+    }
+
+    .botonCrear {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .contenedor {
+        padding: 80px 12px 20px 12px;
+    }
+
+    .titulo {
+        font-size: 24px;
+    }
+
+    .buscador {
+        padding: 0 12px;
+    }
+
+    .inputBusqueda {
+        padding: 12px 8px;
+        font-size: 14px;
+    }
+
+    .filtroBoton {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .tabla th,
+    .tabla td {
+        padding: 12px 12px;
+        font-size: 13px;
+    }
+
+    .usuarioCell {
+        min-width: 180px;
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .avatar ion-icon {
+        font-size: 20px;
+    }
+
+    .botonCrear span {
+        display: none;
+    }
+
+    .modal,
+    .modalEliminar {
+        width: 95%;
+    }
+
+    .modalHeader,
+    .modalBody,
+    .modalFooter {
+        padding: 16px;
+    }
+
+    .modalFooter {
+        flex-direction: column;
+    }
+
+    .botonCancelar,
+    .botonConfirmar,
+    .botonEliminarConfirmar {
+        width: 100%;
+        justify-content: center;
+    }
+}
