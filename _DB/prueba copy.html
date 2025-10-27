@@ -1,0 +1,217 @@
+# 📦 CONTEXTO COMPLETO - App Licencias Angel Android
+
+## 🎯 RESUMEN DEL PROYECTO
+
+Estoy desarrollando una **app Android nativa** en Kotlin + Jetpack Compose que:
+
+1. **Lee datos de pantalla** de DiDi con OCR (ML Kit)
+2. **Calcula tarifas** automáticamente ($/km, $/min, $/hora)
+3. **Muestra overlay flotante** con los resultados
+4. **Sistema de licencias mensuales** vinculadas a dispositivo (ANDROID_ID)
+5. **Backend en Next.js 16** con API REST + MySQL
+6. **Base de datos:** MySQL (ya está creada con procedimientos almacenados)
+
+---
+
+## 📱 INFORMACIÓN DEL PROYECTO ANDROID
+
+### Package Name:
+```
+com.example.licenciasangel
+```
+
+### Configuración:
+```
+- Android Studio: Hedgehog o superior
+- Kotlin: 1.9.22
+- Compose BOM: 2024.02.00
+- Min SDK: 26 (Android 8.0)
+- Target SDK: 34
+- JDK: 17
+```
+
+---
+
+## 📁 ESTRUCTURA COMPLETA DEL PROYECTO
+
+```
+app/src/main/
+├── AndroidManifest.xml
+├── java/com/example/licenciasangel/
+│   ├── MainActivity.kt
+│   ├── MaiztroApp.kt
+│   ├── MaiztroApplication.kt
+│   ├── data/
+│   │   ├── ApiService.kt (Retrofit + endpoints + Repository)
+│   │   ├── DatabaseManager.kt (Room DB + entities + DAOs)
+│   │   └── PreferencesManager.kt (EncryptedSharedPreferences)
+│   ├── domain/
+│   │   ├── LicenseManager.kt (Lógica de licencias + validación)
+│   │   └── OcrProcessor.kt (ML Kit + regex + cálculos)
+│   ├── ui/
+│   │   ├── components/
+│   │   │   └── CommonComponents.kt (Componentes reutilizables)
+│   │   ├── screens/
+│   │   │   ├── AuthScreen.kt (Login/Register/Activate con tabs)
+│   │   │   ├── MainScreen.kt (Home/History/Settings con tabs)
+│   │   │   └── OverlayService.kt (Servicio flotante + OCR + Accessibility)
+│   │   └── theme/
+│   │       └── Theme.kt (Material3 dark/light theme)
+│   └── utils/
+│       ├── Constants.kt (URLs, keys, patterns, configuraciones)
+│       └── DeviceUtils.kt (ANDROID_ID, IMEI, device info)
+└── res/
+    ├── values/
+    │   ├── strings.xml
+    │   └── themes.xml
+    └── xml/
+        ├── accessibility_service_config.xml
+        ├── data_extraction_rules.xml
+        └── backup_rules.xml
+---
+
+## 🔌 BACKEND - ENDPOINTS NEXT.JS
+
+**Base URL:** (configurar en Constants.kt)
+```kotlin
+const val API_BASE_URL = "https://demo-licencias.vercel.app"
+```
+ahorita te pasare todos los endpoints que tengo xd 
+
+## 🗄️ BASE DE DATOS MYSQL
+
+### Tablas principales:
+```sql
+- usuarios (id_usuario, nombre_completo, email, telefono, password_hash)
+- licencias (id_licencia, codigo_licencia, id_usuario, dispositivo_id, fecha_vencimiento, activa)
+- viajes_registrados (id_viaje, id_usuario, monto, km_total, min_total, mxn_por_km, mxn_por_min, mxn_por_hora)
+- administradores
+- notificaciones
+- historial_licencias
+```
+
+---
+
+## 🔐 FLUJO DE LICENCIAS
+
+admin es el unico que peude crear usuarios y activar licencias desde la pagina web ahora desde la aplicacion
+movil debe valer solo el login y cuando el usuario se logea y en la base de datos de su cuenta no hay un
+device_id osea esta vacio ese campo pues enviara el de su celular a las bases de datos tenemos endpoints que 
+ya maneja eso despues lo demas ya sabes xd 
+---
+
+## 📊 ARQUITECTURA DE LA APP
+
+### Navigation:
+```
+Splash → (verifica sesión y licencia)
+  ├─> Auth (Login) si no tiene sesión o licencia
+  └─> Main (Home/History/Settings) si tiene sesión y licencia válida
+```
+
+### Componentes clave:
+
+#### MainActivity.kt
+- Activity principal
+- Inicializa: PreferencesManager, ApiRepository, DatabaseRepository, LicenseManager, OcrProcessor
+- Solicita permisos (Overlay, Accessibility, Notifications)
+
+#### MaiztroApp.kt
+- NavHost con Compose Navigation
+- Theme (Material3)
+- SplashScreen con lógica de redirección
+
+#### AuthScreen.kt (3 tabs)
+- **Login:** email + password + device_id → JWT token
+- **Register:** datos completos → crea usuario + token
+- **Activate:** código de licencia → vincula a dispositivo
+
+#### MainScreen.kt (3 tabs)
+- **Home:** Estadísticas, estado de licencia, control del servicio
+- **History:** Lista de viajes guardados (LazyColumn)
+- **Settings:** Info de usuario, renovar licencia, logout
+
+#### OverlayService.kt
+- **Foreground Service** para overlay flotante
+- **AccessibilityService** para detectar DiDi abierto
+- **OCR con ML Kit** → extrae texto de pantalla
+- **Regex patterns** → captura monto, km, minutos
+- **Cálculos automáticos** → $/km, $/min, $/hora
+- **UI Compose en Overlay** → muestra resultados + botones Aceptar/Rechazar
+
+#### LicenseManager.kt
+- `checkLocalLicenseState()` → Valid/Warning/Expired/NoLicense
+- `activateLicense()` → POST /api/license/activate
+- `validateLicenseWithServer()` → POST /api/license/validate
+- `performHeartbeat()` → verificación periódica
+
+#### OcrProcessor.kt
+- `processScreenshot(Bitmap)` → Result<TripData>
+- Regex para extraer: MXN$XX.XX, XX min (XX km), X h
+- Maneja conversión m → km
+- Calcula totales y tarifas
+
+---
+
+## 🔧 DEPENDENCIAS PRINCIPALES
+
+```kotlin
+// Compose
+androidx.compose:compose-bom:2024.02.00
+
+// Navigation
+androidx.navigation:navigation-compose:2.7.6
+
+// Retrofit
+com.squareup.retrofit2:retrofit:2.9.0
+com.squareup.okhttp3:okhttp:4.12.0
+
+// Room
+androidx.room:room-runtime:2.6.1
+androidx.room:room-ktx:2.6.1
+
+// Security
+androidx.security:security-crypto:1.1.0-alpha06
+
+// ML Kit
+com.google.mlkit:text-recognition:16.0.0
+
+// WorkManager
+androidx.work:work-runtime-ktx:2.9.0
+
+// Coroutines
+org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3
+```
+
+---
+
+## ⚠️ PROBLEMAS CONOCIDOS Y SOLUCIONES
+
+### 1. OCR no captura pantalla directamente
+**Problema:** Android no permite screenshot directo sin permisos especiales
+**Solución:** Usar AccessibilityService para detectar contenido visible
+
+### 2. Overlay consume batería
+**Solución:** Solo activar cuando DiDi está abierto, usar WorkManager optimizado
+
+### 3. Licencia puede ser hackeada modificando SharedPreferences
+**Solución:** 
+- EncryptedSharedPreferences
+- Validación en servidor cada 24h
+- Device ID hasheado (no modificable)
+
+### 4. Google Play puede rechazar por Accessibility
+**Solución:** Descripción MUY clara de por qué necesita el permiso
+
+---
+
+## 📝 ARCHIVOS QUE NECESITO QUE REVISES
+
+### Cuando me pases archivos, incluye:
+#### 1. **build.gradle.kts (Module: app)**
+#### 3. **AndroidManifest.xml** (si hay errores de permisos/servicios)
+#### 4. **Constants.kt** (si cambias URLs o configuraciones)
+```
+View → Tool Windows → Logcat
+Copia TODO el error en rojo
+```

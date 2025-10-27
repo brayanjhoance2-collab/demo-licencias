@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Tester - Licencias</title>
+    <title>API Tester - Licencias Angel</title>
     <style>
         * {
             margin: 0;
@@ -12,42 +12,55 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #000;
+            color: #fff;
             min-height: 100vh;
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
+            background: #1a1a1a;
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px rgba(255,255,255,0.1);
+            border: 1px solid #333;
         }
         h1 {
-            color: #667eea;
+            color: #fff;
             margin-bottom: 10px;
             text-align: center;
+            font-size: 32px;
+            letter-spacing: 2px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
         }
         .url-input {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 20px;
-            border: 2px solid #667eea;
+            border: 2px solid #fff;
             border-radius: 8px;
             font-size: 14px;
+            background: #000;
+            color: #fff;
         }
         .section {
             margin-bottom: 30px;
             padding: 20px;
-            background: #f8f9ff;
+            background: #0a0a0a;
             border-radius: 10px;
-            border-left: 4px solid #667eea;
+            border: 2px solid #333;
         }
         h2 {
-            color: #333;
+            color: #fff;
             margin-bottom: 15px;
             font-size: 18px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
         }
         .form-group {
             margin-bottom: 15px;
@@ -55,47 +68,55 @@
         label {
             display: block;
             margin-bottom: 5px;
-            color: #555;
+            color: #aaa;
             font-weight: 600;
             font-size: 14px;
         }
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
-            border: 2px solid #ddd;
+            border: 2px solid #333;
             border-radius: 6px;
             font-size: 14px;
+            background: #000;
+            color: #fff;
             transition: border 0.3s;
         }
-        input:focus {
+        input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #fff;
         }
         button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: #fff;
+            color: #000;
             border: none;
             border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.2s;
         }
         button:hover {
+            background: #ddd;
             transform: translateY(-2px);
         }
         button:active {
             transform: translateY(0);
         }
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+        }
         .response {
             margin-top: 15px;
             padding: 15px;
-            background: #fff;
+            background: #000;
             border-radius: 8px;
-            border: 2px solid #ddd;
-            max-height: 300px;
+            border: 2px solid #333;
+            max-height: 400px;
             overflow-y: auto;
         }
         .response pre {
@@ -103,117 +124,175 @@
             font-size: 12px;
             white-space: pre-wrap;
             word-wrap: break-word;
+            color: #fff;
         }
         .success {
             border-color: #10b981;
-            background: #f0fdf4;
+            background: #0a2f1f;
         }
         .error {
             border-color: #ef4444;
-            background: #fef2f2;
+            background: #2f0a0a;
         }
         .token-display {
-            padding: 10px;
-            background: #fef3c7;
+            padding: 15px;
+            background: #1a1a00;
             border-radius: 6px;
-            margin-top: 10px;
+            margin-bottom: 20px;
             font-size: 12px;
             word-break: break-all;
-            border: 2px solid #fbbf24;
+            border: 2px solid #ffcc00;
         }
         .saved-token {
-            color: #059669;
+            color: #ffcc00;
             font-weight: bold;
+        }
+        .info-box {
+            background: #0a0a2f;
+            border: 2px solid #4444ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .info-box h3 {
+            color: #4444ff;
+            margin-bottom: 10px;
+        }
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .info-box li {
+            padding: 5px 0;
+            color: #aaa;
+        }
+        .step-number {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: #fff;
+            color: #000;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 API Tester - Licencias</h1>
+        <h1>🔑 LICENCIAS ANGEL</h1>
+        <p class="subtitle">API Tester - Flujo Completo</p>
         
         <input type="text" class="url-input" id="baseUrl" 
                value="https://demo-licencias.vercel.app"
                placeholder="URL base de tu API (sin / al final)">
 
-        <div id="tokenDisplay" style="display:none;" class="token-display">
-            <strong>Token guardado:</strong> <span id="savedToken"></span>
+        <div class="info-box">
+            <h3>📋 Flujo de Prueba</h3>
+            <ul>
+                <li><span class="step-number">1</span> Login sin device_id → Backend responde con device_registered: false/true</li>
+                <li><span class="step-number">2</span> Si false → Register Device con el token obtenido</li>
+                <li><span class="step-number">3</span> Validar Licencia</li>
+                <li><span class="step-number">4</span> Probar endpoints de viajes</li>
+            </ul>
         </div>
 
-        <!-- LOGIN -->
+        <div id="tokenDisplay" style="display:none;" class="token-display">
+            <strong class="saved-token">🔐 Token Guardado:</strong><br>
+            <span id="savedToken" style="color: #ffcc00;"></span>
+        </div>
+
+        <!-- LOGIN SIN DEVICE -->
         <div class="section">
-            <h2>🔑 1. Login</h2>
+            <h2><span class="step-number">1</span> Login (SIN device_id)</h2>
             <div class="form-group">
-                <label>Email</label>
+                <label>📧 Email</label>
                 <input type="email" id="login_email" value="juan@test.com">
             </div>
             <div class="form-group">
-                <label>Password</label>
+                <label>🔒 Password</label>
                 <input type="password" id="login_password" value="password123">
             </div>
-            <div class="form-group">
-                <label>Device ID (opcional)</label>
-                <input type="text" id="login_device" value="" placeholder="Dejar vacío para login sin device">
-            </div>
-            <button onclick="login()">Login</button>
+            <button onclick="login()">INICIAR SESIÓN</button>
             <div id="response_login" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- REGISTER DEVICE -->
+        <div class="section">
+            <h2><span class="step-number">2</span> Registrar Dispositivo</h2>
+            <p style="color: #888; margin-bottom: 15px; font-size: 13px;">
+                ⚠️ Solo usar si el login retornó device_registered: false
+            </p>
+            <div class="form-group">
+                <label>📱 Device ID</label>
+                <input type="text" id="register_device" value="abc123def456ghi789xyz">
+            </div>
+            <button onclick="registerDevice()" id="btnRegisterDevice" disabled>Registrar Dispositivo</button>
+            <div id="response_register" class="response" style="display:none;"></div>
         </div>
 
         <!-- VALIDAR LICENCIA -->
         <div class="section">
-            <h2>✅ 2. Validar Licencia</h2>
+            <h2><span class="step-number">3</span> Validar Licencia</h2>
             <div class="form-group">
-                <label>Device ID</label>
-                <input type="text" id="val_device" value="device-test-001">
+                <label>📱 Device ID</label>
+                <input type="text" id="val_device" value="abc123def456ghi789xyz">
             </div>
-            <button onclick="validateLicense()">Validar Licencia</button>
+            <button onclick="validateLicense()" id="btnValidate" disabled>Validar Licencia</button>
             <div id="response_validate" class="response" style="display:none;"></div>
         </div>
 
         <!-- GUARDAR VIAJE -->
         <div class="section">
-            <h2>🚗 3. Guardar Viaje</h2>
-            <div class="form-group">
-                <label>Monto</label>
-                <input type="number" id="trip_monto" value="150.50">
+            <h2><span class="step-number">4</span> Guardar Viaje</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>💰 Monto</label>
+                    <input type="number" id="trip_monto" value="150.50">
+                </div>
+                <div class="form-group">
+                    <label>📏 KM Total</label>
+                    <input type="number" id="trip_km" value="12.5">
+                </div>
+                <div class="form-group">
+                    <label>⏱️ Minutos</label>
+                    <input type="number" id="trip_min" value="25">
+                </div>
+                <div class="form-group">
+                    <label>💵 MXN/KM</label>
+                    <input type="number" id="trip_km_precio" value="8.5">
+                </div>
+                <div class="form-group">
+                    <label>💵 MXN/Min</label>
+                    <input type="number" id="trip_min_precio" value="2.0">
+                </div>
+                <div class="form-group">
+                    <label>💵 MXN/Hora</label>
+                    <input type="number" id="trip_hora_precio" value="120">
+                </div>
             </div>
-            <div class="form-group">
-                <label>KM Total</label>
-                <input type="number" id="trip_km" value="12.5">
-            </div>
-            <div class="form-group">
-                <label>Minutos Total</label>
-                <input type="number" id="trip_min" value="25">
-            </div>
-            <div class="form-group">
-                <label>MXN por KM</label>
-                <input type="number" id="trip_km_precio" value="8.5">
-            </div>
-            <div class="form-group">
-                <label>MXN por Minuto</label>
-                <input type="number" id="trip_min_precio" value="2.0">
-            </div>
-            <div class="form-group">
-                <label>MXN por Hora</label>
-                <input type="number" id="trip_hora_precio" value="120">
-            </div>
-            <button onclick="saveTrip()">Guardar Viaje</button>
+            <button onclick="saveTrip()" id="btnSaveTrip" disabled>Guardar Viaje</button>
             <div id="response_trip" class="response" style="display:none;"></div>
         </div>
 
-        <!-- HISTORIAL VIAJES -->
+        <!-- HISTORIAL -->
         <div class="section">
-            <h2>📜 4. Historial de Viajes</h2>
+            <h2><span class="step-number">5</span> Historial de Viajes</h2>
             <div class="form-group">
-                <label>Límite</label>
-                <input type="number" id="history_limit" value="10">
+                <label>📊 Límite</label>
+                <input type="number" id="history_limit" value="50">
             </div>
-            <button onclick="getHistory()">Ver Historial</button>
+            <button onclick="getHistory()" id="btnHistory" disabled>Ver Historial</button>
             <div id="response_history" class="response" style="display:none;"></div>
         </div>
     </div>
 
     <script>
         let TOKEN = null;
+        let USER_ID = null;
+        let DEVICE_REGISTERED = null;
 
         function showResponse(elementId, data, isSuccess) {
             const el = document.getElementById(elementId);
@@ -225,7 +304,23 @@
         function saveToken(token) {
             TOKEN = token;
             document.getElementById('tokenDisplay').style.display = 'block';
-            document.getElementById('savedToken').textContent = token.substring(0, 50) + '...';
+            document.getElementById('savedToken').textContent = token;
+            
+            // Decodificar token para obtener user_id
+            try {
+                const tokenParts = token.split('.');
+                const payload = JSON.parse(atob(tokenParts[1]));
+                USER_ID = payload.id;
+                console.log('User ID:', USER_ID);
+            } catch (e) {
+                console.error('Error decodificando token:', e);
+            }
+
+            // Habilitar botones que requieren token
+            document.getElementById('btnRegisterDevice').disabled = false;
+            document.getElementById('btnValidate').disabled = false;
+            document.getElementById('btnSaveTrip').disabled = false;
+            document.getElementById('btnHistory').disabled = false;
         }
 
         function getBaseUrl() {
@@ -234,17 +329,13 @@
 
         async function login() {
             const url = getBaseUrl() + '/api/auth/login';
-            const deviceId = document.getElementById('login_device').value.trim();
             
             const data = {
                 email: document.getElementById('login_email').value,
                 password: document.getElementById('login_password').value
             };
-            
-            // Solo agregar device_id si no está vacío
-            if (deviceId) {
-                data.device_id = deviceId;
-            }
+
+            console.log('🔑 LOGIN REQUEST:', url, data);
 
             try {
                 const response = await fetch(url, {
@@ -253,16 +344,68 @@
                     body: JSON.stringify(data)
                 });
                 const result = await response.json();
+                
+                console.log('📥 LOGIN RESPONSE:', result);
+                
                 showResponse('response_login', result, response.ok);
-                if (result.data?.token) saveToken(result.data.token);
+                
+                if (result.data?.token) {
+                    saveToken(result.data.token);
+                    DEVICE_REGISTERED = result.data.device_registered;
+                    
+                    if (!DEVICE_REGISTERED) {
+                        alert('✅ Login exitoso!\n⚠️ device_registered = false\n\n👉 Ahora debes registrar el dispositivo en el paso 2');
+                    } else {
+                        alert('✅ Login exitoso!\n✅ device_registered = true\n\n👉 Puedes validar la licencia directamente');
+                    }
+                }
             } catch (error) {
+                console.error('❌ ERROR:', error);
                 showResponse('response_login', { error: error.message }, false);
+            }
+        }
+
+        async function registerDevice() {
+            if (!TOKEN) {
+                alert('❌ Primero debes hacer login para obtener el token');
+                return;
+            }
+
+            const url = getBaseUrl() + '/api/auth/register-device';
+            const data = {
+                device_id: document.getElementById('register_device').value
+            };
+
+            console.log('📱 REGISTER DEVICE REQUEST:', url, data);
+            console.log('🔐 Token:', TOKEN);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + TOKEN
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                console.log('📥 REGISTER DEVICE RESPONSE:', result);
+                
+                showResponse('response_register', result, response.ok);
+                
+                if (response.ok) {
+                    alert('✅ Dispositivo registrado exitosamente!\n\n👉 Ahora puedes validar la licencia');
+                }
+            } catch (error) {
+                console.error('❌ ERROR:', error);
+                showResponse('response_register', { error: error.message }, false);
             }
         }
 
         async function validateLicense() {
             if (!TOKEN) {
-                alert('Primero debes hacer login para obtener el token');
+                alert('❌ Primero debes hacer login');
                 return;
             }
 
@@ -271,6 +414,8 @@
                 device_id: document.getElementById('val_device').value
             };
 
+            console.log('✅ VALIDATE LICENSE REQUEST:', url, data);
+
             try {
                 const response = await fetch(url, {
                     method: 'POST',
@@ -281,33 +426,36 @@
                     body: JSON.stringify(data)
                 });
                 const result = await response.json();
+                
+                console.log('📥 VALIDATE RESPONSE:', result);
+                
                 showResponse('response_validate', result, response.ok);
             } catch (error) {
+                console.error('❌ ERROR:', error);
                 showResponse('response_validate', { error: error.message }, false);
             }
         }
 
         async function saveTrip() {
-            if (!TOKEN) {
-                alert('Primero debes hacer login para obtener el token');
+            if (!TOKEN || !USER_ID) {
+                alert('❌ Primero debes hacer login');
                 return;
             }
 
             const url = getBaseUrl() + '/api/trips/save';
             
-            // Extraer el id_usuario del token
-            const tokenParts = TOKEN.split('.');
-            const payload = JSON.parse(atob(tokenParts[1]));
-            
             const data = {
-                id_usuario: payload.id,
+                id_usuario: USER_ID,
                 monto: parseFloat(document.getElementById('trip_monto').value),
                 km_total: parseFloat(document.getElementById('trip_km').value),
                 min_total: parseInt(document.getElementById('trip_min').value),
                 mxn_por_km: parseFloat(document.getElementById('trip_km_precio').value),
                 mxn_por_min: parseFloat(document.getElementById('trip_min_precio').value),
-                mxn_por_hora: parseFloat(document.getElementById('trip_hora_precio').value)
+                mxn_por_hora: parseFloat(document.getElementById('trip_hora_precio').value),
+                fecha: new Date().toISOString().split('T')[0]
             };
+
+            console.log('🚗 SAVE TRIP REQUEST:', url, data);
 
             try {
                 const response = await fetch(url, {
@@ -319,20 +467,26 @@
                     body: JSON.stringify(data)
                 });
                 const result = await response.json();
+                
+                console.log('📥 SAVE TRIP RESPONSE:', result);
+                
                 showResponse('response_trip', result, response.ok);
             } catch (error) {
+                console.error('❌ ERROR:', error);
                 showResponse('response_trip', { error: error.message }, false);
             }
         }
 
         async function getHistory() {
             if (!TOKEN) {
-                alert('Primero debes hacer login para obtener el token');
+                alert('❌ Primero debes hacer login');
                 return;
             }
 
             const limit = document.getElementById('history_limit').value;
             const url = getBaseUrl() + '/api/trips/history?limit=' + limit;
+
+            console.log('📜 GET HISTORY REQUEST:', url);
 
             try {
                 const response = await fetch(url, {
@@ -342,11 +496,19 @@
                     }
                 });
                 const result = await response.json();
+                
+                console.log('📥 HISTORY RESPONSE:', result);
+                
                 showResponse('response_history', result, response.ok);
             } catch (error) {
+                console.error('❌ ERROR:', error);
                 showResponse('response_history', { error: error.message }, false);
             }
         }
+
+        // Log inicial
+        console.log('%c🚀 LICENCIAS ANGEL - API TESTER', 'color: white; background: black; font-size: 20px; padding: 10px;');
+        console.log('Abre la consola para ver los logs detallados de cada request');
     </script>
 </body>
 </html>

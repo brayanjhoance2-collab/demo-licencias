@@ -1,3 +1,4 @@
+//api/auth/trips/save/route.js
 import { NextResponse } from 'next/server'
 import db from '@/_DB/db'
 import jwt from 'jsonwebtoken'
