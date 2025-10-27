@@ -1,7 +1,3 @@
-
-// ==================== 5. api/analisis/guardar/route.js ====================
-// GUARDAR ANÁLISIS DE GRUPO
-
 import { NextResponse } from 'next/server'
 import db from '@/_DB/db'
 import jwt from 'jsonwebtoken'
@@ -56,7 +52,7 @@ export async function POST(request) {
     const connection = await db.getConnection()
 
     try {
-      // Guardar análisis
+      // 1. Guardar análisis en analisis_grupos
       await connection.execute(
         `INSERT INTO analisis_grupos 
          (id_grupo, id_usuario, ganancia_total, km_total, min_total, 
@@ -66,7 +62,7 @@ export async function POST(request) {
          mxn_por_km, mxn_por_min, mxn_por_hora, num_capturas]
       )
 
-      // También guardar en historial de viajes
+      // 2. Guardar en historial de viajes_registrados
       await connection.execute(
         `INSERT INTO viajes_registrados 
          (id_usuario, monto, km_total, min_total, mxn_por_km, mxn_por_min, mxn_por_hora) 
@@ -87,7 +83,7 @@ export async function POST(request) {
     console.error('Error al guardar análisis:', error)
     return NextResponse.json({
       success: false,
-      error: 'Error del servidor'
+      error: error.message || 'Error del servidor'
     }, { status: 500, headers: corsHeaders })
   }
 }

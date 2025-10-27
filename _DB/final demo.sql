@@ -624,3 +624,30 @@ SELECT TABLE_NAME
 FROM INFORMATION_SCHEMA.VIEWS 
 WHERE TABLE_SCHEMA = 'defaultdb' 
 AND TABLE_NAME = 'vista_grupos_estadisticas';
+
+
+-- Ejecuta esto en tu MySQL para crear la tabla que falta
+
+USE defaultdb;
+
+-- =============================================
+-- TABLA DE VIAJES REGISTRADOS (HISTORIAL)
+-- =============================================
+CREATE TABLE IF NOT EXISTS viajes_registrados (
+    id_viaje INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    km_total DECIMAL(10, 2) NOT NULL,
+    min_total INT NOT NULL,
+    mxn_por_km DECIMAL(10, 2) NOT NULL,
+    mxn_por_min DECIMAL(10, 2) NOT NULL,
+    mxn_por_hora DECIMAL(10, 2) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    synced BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    INDEX idx_usuario_fecha (id_usuario, fecha DESC)
+);
+
+-- Verificar que se creó
+SELECT 'Tabla viajes_registrados creada exitosamente' AS mensaje;
+SHOW CREATE TABLE viajes_registrados;
