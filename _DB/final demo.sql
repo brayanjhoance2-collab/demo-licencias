@@ -442,3 +442,185 @@ SELECT * FROM configuracion_sistema;
 USE defaultdb;
 ALTER TABLE usuarios 
 ADD COLUMN device_id VARCHAR(255) NULL AFTER telefono;
+
+-- =============================================
+-- ACTUALIZACIÓN DE BASE DE DATOS PARA GRUPOS Y SCREENSHOTS
+-- Ejecutar en MySQL/MariaDB
+-- =============================================
+
+USE defaultdb;
+
+-- =============================================
+-- TABLA DE GRUPOS (PARA LA APP)
+-- =============================================
+CREATE TABLE IF NOT EXISTS grupos_capturas (
+    id_grupo INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    nombre_grupo VARCHAR(100) NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    INDEX idx_usuario_grupo (id_usuario, activo)
+);
+
+-- =============================================
+-- TABLA DE SCREENSHOTS/CAPTURAS
+-- =============================================
+CREATE TABLE IF NOT EXISTS screenshots (
+    id_screenshot INT AUTO_INCREMENT PRIMARY KEY,
+    id_grupo INT NOT NULL,
+    id_usuario INT NOT NULL,
+    ruta_imagen VARCHAR(500) NOT NULL,
+    fecha_captura TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    procesado BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_grupo) REFERENCES grupos_capturas(id_grupo) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    INDEX idx_grupo_screenshot (id_grupo, fecha_captura)
+);
+
+-- =============================================
+-- TABLA DE RESULTADOS DE ANÁLISIS DE GRUPOS
+-- =============================================
+CREATE TABLE IF NOT EXISTS analisis_grupos (
+    id_analisis INT AUTO_INCREMENT PRIMARY KEY,
+    id_grupo INT NOT NULL,
+    id_usuario INT NOT NULL,
+    ganancia_total DECIMAL(10, 2) NOT NULL,
+    km_total DECIMAL(10, 2) NOT NULL,
+    min_total INT NOT NULL,
+    mxn_por_km DECIMAL(10, 2) NOT NULL,
+    mxn_por_min DECIMAL(10, 2) NOT NULL,
+    mxn_por_hora DECIMAL(10, 2) NOT NULL,
+    num_capturas INT NOT NULL,
+    fecha_analisis TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    guardado_en_historial BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_grupo) REFERENCES grupos_capturas(id_grupo) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    INDEX idx_usuario_analisis (id_usuario, fecha_analisis)
+);
+
+-- =============================================
+-- VISTA PARA GRUPOS CON ESTADÍSTICAS
+-- =============================================
+CREATE OR REPLACE VIEW vista_grupos_estadisticas AS
+SELECT 
+    g.id_grupo,
+    g.id_usuario,
+    g.nombre_grupo,
+    g.fecha_creacion,
+    g.activo,
+    COUNT(DISTINCT s.id_screenshot) AS total_capturas,
+    COUNT(DISTINCT a.id_analisis) AS total_analisis,
+    COALESCE(SUM(a.ganancia_total), 0) AS ganancia_total_grupo,
+    u.nombre_completo,
+    u.email
+FROM grupos_capturas g
+LEFT JOIN screenshots s ON g.id_grupo = s.id_grupo
+LEFT JOIN analisis_grupos a ON g.id_grupo = a.id_grupo
+INNER JOIN usuarios u ON g.id_usuario = u.id_usuario
+WHERE g.activo = TRUE
+GROUP BY g.id_grupo, g.id_usuario, g.nombre_grupo, g.fecha_creacion, g.activo, u.nombre_completo, u.email;
+
+-- =============================================
+-- PROCEDIMIENTO: GUARDAR ANÁLISIS DE GRUPO EN HISTORIAL
+-- =============================================
+DELIMITER //
+CREATE PROCEDURE guardar_analisis_en_historial(
+    IN p_id_analisis INT,
+    IN p_id_usuario INT
+)
+BEGIN
+    DECLARE v_ganancia DECIMAL(10,2);
+    DECLARE v_km_total DECIMAL(10,2);
+    DECLARE v_min_total INT;
+    DECLARE v_mxn_km DECIMAL(10,2);
+    DECLARE v_mxn_min DECIMAL(10,2);
+    DECLARE v_mxn_hora DECIMAL(10,2);
+    
+    -- Obtener datos del análisis
+    SELECT 
+        ganancia_total, km_total, min_total, 
+        mxn_por_km, mxn_por_min, mxn_por_hora
+    INTO 
+        v_ganancia, v_km_total, v_min_total,
+        v_mxn_km, v_mxn_min, v_mxn_hora
+    FROM analisis_grupos
+    WHERE id_analisis = p_id_analisis;
+    
+    -- Insertar en viajes_registrados
+    INSERT INTO viajes_registrados (
+        id_usuario, monto, km_total, min_total,
+        mxn_por_km, mxn_por_min, mxn_por_hora
+    ) VALUES (
+        p_id_usuario, v_ganancia, v_km_total, v_min_total,
+        v_mxn_km, v_mxn_min, v_mxn_hora
+    );
+    
+    -- Marcar como guardado
+    UPDATE analisis_grupos 
+    SET guardado_en_historial = TRUE 
+    WHERE id_analisis = p_id_analisis;
+    
+END //
+DELIMITER ;
+
+-- =============================================
+-- PROCEDIMIENTO: LIMPIAR CAPTURAS ANTIGUAS
+-- =============================================
+DELIMITER //
+CREATE PROCEDURE limpiar_capturas_antiguas(
+    IN p_dias_antiguedad INT
+)
+BEGIN
+    DECLARE v_fecha_limite TIMESTAMP;
+    
+    SET v_fecha_limite = DATE_SUB(NOW(), INTERVAL p_dias_antiguedad DAY);
+    
+    -- Eliminar screenshots antiguos que ya fueron procesados
+    DELETE FROM screenshots 
+    WHERE fecha_captura < v_fecha_limite 
+    AND procesado = TRUE;
+    
+    -- Eliminar análisis antiguos ya guardados en historial
+    DELETE FROM analisis_grupos
+    WHERE fecha_analisis < v_fecha_limite
+    AND guardado_en_historial = TRUE;
+    
+END //
+DELIMITER ;
+
+-- =============================================
+-- EVENTO: LIMPIEZA AUTOMÁTICA SEMANAL
+-- =============================================
+DELIMITER //
+CREATE EVENT IF NOT EXISTS evento_limpieza_capturas
+ON SCHEDULE EVERY 1 WEEK
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+    CALL limpiar_capturas_antiguas(30); -- Eliminar capturas de más de 30 días
+END //
+DELIMITER ;
+
+-- =============================================
+-- ÍNDICES ADICIONALES PARA OPTIMIZACIÓN
+-- =============================================
+CREATE INDEX idx_screenshot_procesado ON screenshots(procesado, fecha_captura);
+CREATE INDEX idx_analisis_guardado ON analisis_grupos(guardado_en_historial, fecha_analisis);
+
+-- =============================================
+-- VERIFICACIÓN
+-- =============================================
+SELECT 'Base de datos actualizada con éxito' AS mensaje;
+
+SELECT 'Nuevas tablas creadas:' AS info;
+SELECT TABLE_NAME 
+FROM INFORMATION_SCHEMA.TABLES 
+WHERE TABLE_SCHEMA = 'defaultdb' 
+AND TABLE_NAME IN ('grupos_capturas', 'screenshots', 'analisis_grupos');
+
+SELECT 'Vistas creadas:' AS info;
+SELECT TABLE_NAME 
+FROM INFORMATION_SCHEMA.VIEWS 
+WHERE TABLE_SCHEMA = 'defaultdb' 
+AND TABLE_NAME = 'vista_grupos_estadisticas';
