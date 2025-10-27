@@ -437,3 +437,8 @@ SELECT 'Roles predefinidos:' AS info;
 SELECT * FROM roles;
 SELECT 'Configuraciones por defecto:' AS info;
 SELECT * FROM configuracion_sistema;
+
+
+USE defaultdb;
+ALTER TABLE usuarios 
+ADD COLUMN device_id VARCHAR(255) NULL AFTER telefono;

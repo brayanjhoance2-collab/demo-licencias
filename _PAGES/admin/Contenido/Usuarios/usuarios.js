@@ -332,7 +332,7 @@ export default function UsuariosAdmin() {
                                 <thead>
                                     <tr>
                                         <th>Usuario</th>
-                                        <th>Telefono</th>
+                                        <th>Whatsapp</th>
                                         <th>Fecha Registro</th>
                                         <th>Ultima Sesion</th>
                                         <th>Licencias</th>
@@ -354,7 +354,7 @@ export default function UsuariosAdmin() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>{usuario.telefono || 'Sin telefono'}</td>
+                                            <td>{usuario.telefono || 'Sin Whatsapp'}</td>
                                             <td>{formatearFecha(usuario.fechaRegistro)}</td>
                                             <td>{usuario.ultimaSesion ? formatearFecha(usuario.ultimaSesion) : 'Nunca'}</td>
                                             <td>
@@ -546,7 +546,7 @@ export default function UsuariosAdmin() {
                                 </div>
 
                                 <div className={estilos.campo}>
-                                    <label className={estilos.label}>Telefono</label>
+                                    <label className={estilos.label}>Whatsapp</label>
                                     <input
                                         type="tel"
                                         value={formularioUsuario.telefono}

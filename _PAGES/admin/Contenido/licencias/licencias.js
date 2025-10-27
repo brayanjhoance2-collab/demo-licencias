@@ -30,7 +30,7 @@ export default function LicenciasAdmin() {
     const [formulario, setFormulario] = useState({
         idUsuario: '',
         tipoLicencia: 'mensual',
-        dispositivoId: ''
+        deviceId: ''
     })
 
     useEffect(() => {
@@ -112,7 +112,7 @@ export default function LicenciasAdmin() {
         setFormulario({
             idUsuario: '',
             tipoLicencia: 'mensual',
-            dispositivoId: ''
+            deviceId: ''
         })
         setMensajeError('')
         setModalAbierto(true)
@@ -123,7 +123,7 @@ export default function LicenciasAdmin() {
         setFormulario({
             idUsuario: licencia.idUsuario,
             tipoLicencia: licencia.tipo,
-            dispositivoId: licencia.dispositivoId || ''
+            deviceId: licencia.deviceIdUsuario || '' // Usar el device_id del usuario
         })
         setMensajeError('')
         setModalEdicion(true)
@@ -172,7 +172,7 @@ export default function LicenciasAdmin() {
             const resultado = await crearLicencia(
                 formulario.idUsuario,
                 formulario.tipoLicencia,
-                formulario.dispositivoId
+                formulario.deviceId
             )
             
             if (resultado.success) {
@@ -199,8 +199,9 @@ export default function LicenciasAdmin() {
         try {
             const resultado = await editarLicencia(
                 licenciaSeleccionada.id,
+                licenciaSeleccionada.idUsuario,
                 formulario.tipoLicencia,
-                formulario.dispositivoId
+                formulario.deviceId
             )
             
             if (resultado.success) {
@@ -358,12 +359,12 @@ export default function LicenciasAdmin() {
                                 <thead>
                                     <tr>
                                         <th>Usuario</th>
-                                        <th>Codigo Licencia</th>
+                                        <th>Device ID</th>
+                                        <th>Estado</th>
                                         <th>Tipo</th>
                                         <th>Inicio</th>
                                         <th>Vencimiento</th>
                                         <th>Dias Restantes</th>
-                                        <th>Estado</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -384,7 +385,18 @@ export default function LicenciasAdmin() {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span className={estilos.codigo}>{licencia.codigo}</span>
+                                                    {licencia.deviceIdUsuario ? (
+                                                        <span className={estilos.deviceId} title={licencia.deviceIdUsuario}>
+                                                            {licencia.deviceIdUsuario.substring(0, 8)}...
+                                                        </span>
+                                                    ) : (
+                                                        <span className={estilos.sinDevice}>Sin device</span>
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    <span className={`${estilos.estadoBadge} ${estado.clase}`}>
+                                                        {licencia.activa ? 'Activo' : 'Inactivo'}
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     <span className={estilos.tipoBadge}>{licencia.tipo}</span>
@@ -394,11 +406,6 @@ export default function LicenciasAdmin() {
                                                 <td>
                                                     <span className={estilos.diasRestantes}>
                                                         {licencia.diasRestantes < 0 ? '0' : licencia.diasRestantes} dias
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span className={`${estilos.estadoBadge} ${estado.clase}`}>
-                                                        {estado.texto}
                                                     </span>
                                                 </td>
                                                 <td>
@@ -490,12 +497,12 @@ export default function LicenciasAdmin() {
                             </div>
 
                             <div className={estilos.campo}>
-                                <label>ID de Dispositivo (Opcional)</label>
+                                <label>Device ID (Opcional)</label>
                                 <input
                                     type="text"
-                                    value={formulario.dispositivoId}
-                                    onChange={(e) => manejarCambioFormulario('dispositivoId', e.target.value)}
-                                    placeholder="Ingrese ID del dispositivo"
+                                    value={formulario.deviceId}
+                                    onChange={(e) => manejarCambioFormulario('deviceId', e.target.value)}
+                                    placeholder="Ingrese Device ID"
                                     className={estilos.input}
                                 />
                             </div>
@@ -574,14 +581,15 @@ export default function LicenciasAdmin() {
                             </div>
 
                             <div className={estilos.campo}>
-                                <label>ID de Dispositivo (Opcional)</label>
+                                <label>Device ID</label>
                                 <input
                                     type="text"
-                                    value={formulario.dispositivoId}
-                                    onChange={(e) => manejarCambioFormulario('dispositivoId', e.target.value)}
-                                    placeholder="Ingrese ID del dispositivo"
+                                    value={formulario.deviceId}
+                                    onChange={(e) => manejarCambioFormulario('deviceId', e.target.value)}
+                                    placeholder="Ingrese Device ID"
                                     className={estilos.input}
                                 />
+                                <small className={estilos.ayuda}>Puedes modificar el Device ID del usuario</small>
                             </div>
 
                             <div className={estilos.modalFooter}>
@@ -591,6 +599,26 @@ export default function LicenciasAdmin() {
                                     className={estilos.botonSecundario}
                                 >
                                     Cancelar
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        toggleEstadoLicencia(licenciaSeleccionada.id, licenciaSeleccionada.activa)
+                                        cerrarModales()
+                                    }}
+                                    className={estilos.botonAdvertencia}
+                                >
+                                    {licenciaSeleccionada.activa ? (
+                                        <>
+                                            <ion-icon name="ban-outline"></ion-icon>
+                                            <span>Desactivar</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ion-icon name="checkmark-circle-outline"></ion-icon>
+                                            <span>Activar</span>
+                                        </>
+                                    )}
                                 </button>
                                 <button
                                     type="submit"
@@ -605,7 +633,7 @@ export default function LicenciasAdmin() {
                                     ) : (
                                         <>
                                             <ion-icon name="save-outline"></ion-icon>
-                                            <span>Guardar Cambios</span>
+                                            <span>Guardar</span>
                                         </>
                                     )}
                                 </button>
@@ -634,13 +662,13 @@ export default function LicenciasAdmin() {
                             
                             <div className={estilos.advertencia}>
                                 <ion-icon name="warning-outline"></ion-icon>
-                                <p>Estas seguro de eliminar esta licencia?</p>
+                                <p>¿Estás seguro de eliminar esta licencia?</p>
                                 <div className={estilos.detallesEliminar}>
                                     <p><strong>Usuario:</strong> {licenciaSeleccionada?.nombreUsuario}</p>
-                                    <p><strong>Codigo:</strong> {licenciaSeleccionada?.codigo}</p>
+                                    <p><strong>Código:</strong> {licenciaSeleccionada?.codigo}</p>
                                     <p><strong>Tipo:</strong> {licenciaSeleccionada?.tipo}</p>
                                 </div>
-                                <p className={estilos.textoAdvertencia}>Esta accion no se puede deshacer</p>
+                                <p className={estilos.textoAdvertencia}>Esta acción no se puede deshacer</p>
                             </div>
 
                             <div className={estilos.modalFooter}>

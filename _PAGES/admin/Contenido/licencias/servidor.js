@@ -87,7 +87,8 @@ export async function obtenerLicencias(filtro = 'todas', busqueda = '') {
                 u.id_usuario,
                 u.nombre_completo,
                 u.email,
-                u.telefono
+                u.telefono,
+                u.device_id
             FROM licencias l
             INNER JOIN usuarios u ON l.id_usuario = u.id_usuario
             ${whereClause}
@@ -110,7 +111,8 @@ export async function obtenerLicencias(filtro = 'todas', busqueda = '') {
                 idUsuario: l.id_usuario,
                 nombreUsuario: l.nombre_completo,
                 emailUsuario: l.email,
-                telefonoUsuario: l.telefono
+                telefonoUsuario: l.telefono,
+                deviceIdUsuario: l.device_id
             }))
         }
 
@@ -168,7 +170,7 @@ export async function obtenerUsuariosDisponibles() {
     }
 }
 
-export async function crearLicencia(idUsuario, tipoLicencia, dispositivoId = '') {
+export async function crearLicencia(idUsuario, tipoLicencia, deviceId = '') {
     try {
         const admin = await verificarAdmin()
         if (!admin) {
@@ -215,11 +217,19 @@ export async function crearLicencia(idUsuario, tipoLicencia, dispositivoId = '')
 
         const codigoLicencia = `LIC-${String(idUsuario).padStart(5, '0')}-${Date.now()}`
 
+        // Actualizar el device_id del usuario si se proporciona
+        if (deviceId && deviceId.trim() !== '') {
+            await db.query(
+                'UPDATE usuarios SET device_id = ? WHERE id_usuario = ?',
+                [deviceId.trim(), idUsuario]
+            )
+        }
+
         const [resultado] = await db.query(`
             INSERT INTO licencias 
             (id_usuario, codigo_licencia, fecha_inicio, fecha_vencimiento, tipo_licencia, dispositivo_id, activa, modificado_por)
             VALUES (?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL ? DAY), ?, ?, 1, ?)
-        `, [idUsuario, codigoLicencia, duracion, tipoLicencia, dispositivoId || null, admin.id])
+        `, [idUsuario, codigoLicencia, duracion, tipoLicencia, deviceId || null, admin.id])
 
         const idLicencia = resultado.insertId
 
@@ -257,7 +267,7 @@ export async function crearLicencia(idUsuario, tipoLicencia, dispositivoId = '')
     }
 }
 
-export async function editarLicencia(idLicencia, tipoLicencia, dispositivoId = '') {
+export async function editarLicencia(idLicencia, idUsuario, tipoLicencia, deviceId = '') {
     try {
         const admin = await verificarAdmin()
         if (!admin) {
@@ -302,6 +312,13 @@ export async function editarLicencia(idLicencia, tipoLicencia, dispositivoId = '
 
         const duracion = duraciones[tipoLicencia] || 30
 
+        // Actualizar el device_id en la tabla usuarios
+        await db.query(
+            'UPDATE usuarios SET device_id = ? WHERE id_usuario = ?',
+            [deviceId && deviceId.trim() !== '' ? deviceId.trim() : null, idUsuario]
+        )
+
+        // Actualizar la licencia
         await db.query(`
             UPDATE licencias 
             SET tipo_licencia = ?,
@@ -310,17 +327,17 @@ export async function editarLicencia(idLicencia, tipoLicencia, dispositivoId = '
                 dispositivo_id = ?,
                 modificado_por = ?
             WHERE id_licencia = ?
-        `, [tipoLicencia, duracion, dispositivoId || null, admin.id, idLicencia])
+        `, [tipoLicencia, duracion, deviceId || null, admin.id, idLicencia])
 
         await db.query(`
             INSERT INTO historial_licencias (id_licencia, accion, id_admin_modificador, notas)
             VALUES (?, 'renovada', ?, ?)
-        `, [idLicencia, admin.id, `Licencia actualizada a tipo ${tipoLicencia} y renovada`])
+        `, [idLicencia, admin.id, `Licencia actualizada a tipo ${tipoLicencia} y renovada - Device ID actualizado en usuario`])
 
         await db.query(`
             INSERT INTO historial_administradores (id_admin, accion, tabla_afectada, id_registro_afectado, detalles)
             VALUES (?, 'UPDATE', 'licencias', ?, ?)
-        `, [admin.id, idLicencia, `Licencia editada - nuevo tipo: ${tipoLicencia}`])
+        `, [admin.id, idLicencia, `Licencia editada - nuevo tipo: ${tipoLicencia}, Device ID usuario: ${deviceId || 'sin asignar'}`])
 
         await db.query(`
             INSERT INTO notificaciones (tipo_destinatario, id_destinatario, titulo, mensaje, tipo)
@@ -480,6 +497,7 @@ export async function obtenerDetallesLicencia(idLicencia) {
                 u.nombre_completo,
                 u.email,
                 u.telefono,
+                u.device_id,
                 u.fecha_registro as usuario_fecha_registro
             FROM licencias l
             INNER JOIN usuarios u ON l.id_usuario = u.id_usuario
@@ -525,6 +543,7 @@ export async function obtenerDetallesLicencia(idLicencia) {
                     nombre: l.nombre_completo,
                     email: l.email,
                     telefono: l.telefono,
+                    deviceId: l.device_id,
                     fechaRegistro: l.usuario_fecha_registro
                 },
                 historial: historial.map(h => ({
