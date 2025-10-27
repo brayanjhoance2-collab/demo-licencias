@@ -1,4 +1,7 @@
-// app/api/analisis/guardar/route.js
+
+// ==================== 5. api/analisis/guardar/route.js ====================
+// GUARDAR ANÁLISIS DE GRUPO
+
 import { NextResponse } from 'next/server'
 import db from '@/_DB/db'
 import jwt from 'jsonwebtoken'
@@ -30,8 +33,6 @@ function verifyToken(request) {
 }
 
 export async function POST(request) {
-  const connection = await db.getConnection()
-  
   try {
     const decoded = verifyToken(request)
     if (!decoded) {
@@ -49,29 +50,13 @@ export async function POST(request) {
       mxn_por_km, 
       mxn_por_min, 
       mxn_por_hora,
-      num_capturas,
-      nombre_grupo // AGREGAR EL NOMBRE DEL GRUPO
+      num_capturas
     } = await request.json()
 
-    await connection.beginTransaction()
+    const connection = await db.getConnection()
 
     try {
-      // 1. PRIMERO: Verificar si el grupo existe, si no, crearlo
-      const [grupoExiste] = await connection.execute(
-        `SELECT id_grupo FROM grupos_capturas WHERE id_grupo = ? AND id_usuario = ?`,
-        [id_grupo, decoded.id]
-      )
-
-      if (grupoExiste.length === 0) {
-        // El grupo NO existe, lo creamos
-        await connection.execute(
-          `INSERT INTO grupos_capturas (id_grupo, id_usuario, nombre_grupo, fecha_creacion) 
-           VALUES (?, ?, ?, NOW())`,
-          [id_grupo, decoded.id, nombre_grupo || `Grupo ${id_grupo}`]
-        )
-      }
-
-      // 2. SEGUNDO: Ahora sí guardar el análisis (el grupo ya existe)
+      // Guardar análisis
       await connection.execute(
         `INSERT INTO analisis_grupos 
          (id_grupo, id_usuario, ganancia_total, km_total, min_total, 
@@ -81,7 +66,7 @@ export async function POST(request) {
          mxn_por_km, mxn_por_min, mxn_por_hora, num_capturas]
       )
 
-      // 3. TERCERO: Guardar en historial de viajes
+      // También guardar en historial de viajes
       await connection.execute(
         `INSERT INTO viajes_registrados 
          (id_usuario, monto, km_total, min_total, mxn_por_km, mxn_por_min, mxn_por_hora) 
@@ -89,25 +74,20 @@ export async function POST(request) {
         [decoded.id, ganancia_total, km_total, min_total, mxn_por_km, mxn_por_min, mxn_por_hora]
       )
 
-      await connection.commit()
-
       return NextResponse.json({
         success: true,
         message: 'Análisis guardado exitosamente'
       }, { headers: corsHeaders })
 
-    } catch (error) {
-      await connection.rollback()
-      throw error
+    } finally {
+      connection.release()
     }
 
   } catch (error) {
     console.error('Error al guardar análisis:', error)
     return NextResponse.json({
       success: false,
-      error: error.message || 'Error del servidor'
+      error: 'Error del servidor'
     }, { status: 500, headers: corsHeaders })
-  } finally {
-    connection.release()
   }
 }
