@@ -44,7 +44,7 @@ export async function GET(request) {
     const connection = await db.getConnection()
 
     try {
-      // Obtener viajes con información del grupo si existe
+      // IMPORTANTE: MySQL no acepta LIMIT como prepared statement, hay que interpolarlo directamente
       const [viajes] = await connection.execute(
         `SELECT 
           vr.id_viaje,
@@ -64,8 +64,8 @@ export async function GET(request) {
          LEFT JOIN grupos_capturas gc ON ag.id_grupo = gc.id_grupo
          WHERE vr.id_usuario = ?
          ORDER BY vr.fecha DESC
-         LIMIT ?`,
-        [decoded.id, limit]
+         LIMIT ${limit}`,
+        [decoded.id]
       )
 
       return NextResponse.json({
