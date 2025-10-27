@@ -4,6 +4,18 @@ import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secret_key_aqui'
 
+// Headers CORS
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+// Manejar preflight
+export async function OPTIONS(request) {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 function verifyToken(request) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,7 +37,7 @@ export async function POST(request) {
       return NextResponse.json({
         success: false,
         error: 'Token inválido'
-      }, { status: 401 })
+      }, { status: 401, headers: corsHeaders })
     }
 
     const { device_id } = await request.json()
@@ -47,7 +59,7 @@ export async function POST(request) {
         return NextResponse.json({
           success: false,
           error: 'No tienes licencia activa'
-        }, { status: 404 })
+        }, { status: 404, headers: corsHeaders })
       }
 
       const licencia = licencias[0]
@@ -64,7 +76,7 @@ export async function POST(request) {
         return NextResponse.json({
           success: false,
           error: 'Licencia expirada'
-        }, { status: 403 })
+        }, { status: 403, headers: corsHeaders })
       }
 
       return NextResponse.json({
@@ -76,7 +88,7 @@ export async function POST(request) {
           activa: true,
           dias_restantes
         }
-      })
+      }, { headers: corsHeaders })
 
     } finally {
       connection.release()
@@ -87,6 +99,6 @@ export async function POST(request) {
     return NextResponse.json({
       success: false,
       error: 'Error del servidor'
-    }, { status: 500 })
+    }, { status: 500, headers: corsHeaders })
   }
 }

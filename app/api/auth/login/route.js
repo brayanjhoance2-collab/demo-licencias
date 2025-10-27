@@ -5,6 +5,18 @@ import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secret_key_aqui'
 
+// Headers CORS
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+// Manejar preflight
+export async function OPTIONS(request) {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 export async function POST(request) {
   try {
     const { email, password, device_id } = await request.json()
@@ -13,7 +25,7 @@ export async function POST(request) {
       return NextResponse.json({
         success: false,
         error: 'Datos incompletos'
-      }, { status: 400 })
+      }, { status: 400, headers: corsHeaders })
     }
 
     const connection = await db.getConnection()
@@ -29,7 +41,7 @@ export async function POST(request) {
         return NextResponse.json({
           success: false,
           error: 'Credenciales inválidas'
-        }, { status: 401 })
+        }, { status: 401, headers: corsHeaders })
       }
 
       const usuario = rows[0]
@@ -41,7 +53,7 @@ export async function POST(request) {
         return NextResponse.json({
           success: false,
           error: 'Credenciales inválidas'
-        }, { status: 401 })
+        }, { status: 401, headers: corsHeaders })
       }
 
       // Actualizar última sesión
@@ -72,7 +84,7 @@ export async function POST(request) {
             telefono: usuario.telefono
           }
         }
-      })
+      }, { headers: corsHeaders })
 
     } finally {
       connection.release()
@@ -83,6 +95,6 @@ export async function POST(request) {
     return NextResponse.json({
       success: false,
       error: 'Error del servidor'
-    }, { status: 500 })
+    }, { status: 500, headers: corsHeaders })
   }
 }

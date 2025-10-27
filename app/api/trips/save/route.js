@@ -4,6 +4,18 @@ import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secret_key_aqui'
 
+// Headers CORS
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+}
+
+// Manejar preflight
+export async function OPTIONS(request) {
+  return NextResponse.json({}, { headers: corsHeaders })
+}
+
 function verifyToken(request) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,7 +37,7 @@ export async function POST(request) {
       return NextResponse.json({
         success: false,
         error: 'Token inválido'
-      }, { status: 401 })
+      }, { status: 401, headers: corsHeaders })
     }
 
     const { id_usuario, monto, km_total, min_total, mxn_por_km, mxn_por_min, mxn_por_hora, fecha } = await request.json()
@@ -43,7 +55,7 @@ export async function POST(request) {
       return NextResponse.json({
         success: true,
         message: 'Viaje guardado correctamente'
-      })
+      }, { headers: corsHeaders })
 
     } finally {
       connection.release()
@@ -54,6 +66,6 @@ export async function POST(request) {
     return NextResponse.json({
       success: false,
       error: 'Error del servidor'
-    }, { status: 500 })
+    }, { status: 500, headers: corsHeaders })
   }
 }
