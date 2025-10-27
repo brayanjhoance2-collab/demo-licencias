@@ -1,3 +1,6 @@
+// app/api/trips/delete/route.js
+// REEMPLAZA TODO EL ARCHIVO CON ESTO:
+
 import { NextResponse } from 'next/server'
 import db from '@/_DB/db'
 import jwt from 'jsonwebtoken'
@@ -28,20 +31,26 @@ function verifyToken(request) {
   }
 }
 
-export async function DELETE(request) {
+// ✅ CAMBIAR A POST EN LUGAR DE DELETE
+export async function POST(request) {
   try {
+    console.log('═══════════════════════════')
+    console.log('🗑️ DELETE TRIP REQUEST')
+    
     const decoded = verifyToken(request)
     if (!decoded) {
+      console.log('❌ Token inválido')
       return NextResponse.json(
         { success: false, error: 'Token inválido' },
         { status: 401, headers: corsHeaders }
       )
     }
 
-    const body = await request.json()
-    console.log('📥 DELETE request body:', body)
+    console.log('✅ Usuario autenticado:', decoded.id)
 
-    // CAMBIO: Usar id_viaje del body
+    const body = await request.json()
+    console.log('📥 Body recibido:', body)
+
     const id_viaje = body.id_viaje
 
     if (!id_viaje) {
@@ -52,7 +61,7 @@ export async function DELETE(request) {
       )
     }
 
-    console.log(`🔍 Intentando eliminar viaje ${id_viaje} del usuario ${decoded.id}`)
+    console.log(`🔍 Verificando viaje ${id_viaje} del usuario ${decoded.id}`)
 
     const connection = await db.getConnection()
 
@@ -80,12 +89,13 @@ export async function DELETE(request) {
       )
 
       console.log('✅ Viaje eliminado, affected rows:', result.affectedRows)
+      console.log('═══════════════════════════')
 
       return NextResponse.json(
         {
           success: true,
           message: 'Viaje eliminado exitosamente',
-          data: { deleted: true }
+          data: { deleted: true, id_viaje: id_viaje }
         },
         { headers: corsHeaders }
       )
@@ -96,6 +106,7 @@ export async function DELETE(request) {
 
   } catch (error) {
     console.error('❌ Error al eliminar viaje:', error)
+    console.log('═══════════════════════════')
     return NextResponse.json(
       { success: false, error: 'Error del servidor' },
       { status: 500, headers: corsHeaders }
