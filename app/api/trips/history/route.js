@@ -45,13 +45,14 @@ export async function GET(request) {
     console.log('✅ Usuario autenticado:', decoded.id)
 
     const { searchParams } = new URL(request.url)
-    const limit = parseInt(searchParams.get('limit') || '100')
+    const limit = parseInt(searchParams.get('limit') || '100', 10)
 
     console.log(`🔍 Buscando últimos ${limit} viajes del usuario ${decoded.id}`)
 
     const connection = await db.getConnection()
 
     try {
+      // USAR TEMPLATE LITERAL EN LUGAR DE PLACEHOLDERS PARA LIMIT
       const [viajes] = await connection.execute(
         `SELECT 
           v.id_viaje,
@@ -103,8 +104,8 @@ export async function GET(request) {
         LEFT JOIN analisis_detallado a ON v.id_viaje = a.id_viaje
         WHERE v.id_usuario = ?
         ORDER BY v.fecha DESC
-        LIMIT ?`,
-        [decoded.id, limit]
+        LIMIT ${limit}`,
+        [decoded.id]
       )
 
       console.log(`✅ ${viajes.length} viajes encontrados`)

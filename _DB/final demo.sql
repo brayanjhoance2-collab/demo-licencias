@@ -731,3 +731,21 @@ CREATE TABLE IF NOT EXISTS analisis_detallado (
 
 -- Verificar que se creó
 SELECT 'Tabla analisis_detallado creada exitosamente' AS mensaje;
+
+-- Ejecuta esto en tu MySQL para agregar las columnas faltantes
+
+USE defaultdb;
+
+-- Agregar columna id_grupo a viajes_registrados
+ALTER TABLE viajes_registrados 
+ADD COLUMN id_grupo INT NULL AFTER fecha,
+ADD FOREIGN KEY (id_grupo) REFERENCES grupos_capturas(id_grupo) ON DELETE SET NULL;
+
+-- Agregar columna num_capturas a viajes_registrados
+ALTER TABLE viajes_registrados 
+ADD COLUMN num_capturas INT NULL DEFAULT NULL AFTER id_grupo;
+
+-- Verificar que se agregaron
+DESCRIBE viajes_registrados;
+
+SELECT 'Columnas agregadas exitosamente a viajes_registrados' AS mensaje;
