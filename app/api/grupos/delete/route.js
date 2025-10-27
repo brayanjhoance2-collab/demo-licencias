@@ -1,7 +1,3 @@
-
-// ==================== 3. api/grupos/delete/route.js ====================
-// ELIMINAR UN GRUPO (Y SUS SCREENSHOTS)
-
 import { NextResponse } from 'next/server'
 import db from '@/_DB/db'
 import jwt from 'jsonwebtoken'
@@ -68,17 +64,36 @@ export async function DELETE(request) {
         }, { status: 404, headers: corsHeaders })
       }
 
-      // Marcar como inactivo (soft delete)
+      // NUEVO: Eliminar viajes del historial asociados a este grupo
       await connection.execute(
-        `UPDATE grupos_capturas SET activo = FALSE WHERE id_grupo = ?`,
+        `DELETE vr FROM viajes_registrados vr
+         INNER JOIN analisis_grupos ag ON vr.id_usuario = ag.id_usuario 
+           AND ABS(TIMESTAMPDIFF(SECOND, vr.fecha, ag.fecha_analisis)) < 5
+         WHERE ag.id_grupo = ? AND vr.id_usuario = ?`,
+        [id_grupo, decoded.id]
+      )
+
+      // Eliminar análisis del grupo
+      await connection.execute(
+        `DELETE FROM analisis_grupos WHERE id_grupo = ?`,
         [id_grupo]
       )
 
-      // También eliminar los screenshots asociados (la BD lo hace automáticamente con CASCADE)
+      // Eliminar screenshots (CASCADE lo hace automático, pero lo hacemos explícito)
+      await connection.execute(
+        `DELETE FROM screenshots WHERE id_grupo = ?`,
+        [id_grupo]
+      )
+
+      // Eliminar el grupo
+      await connection.execute(
+        `DELETE FROM grupos_capturas WHERE id_grupo = ?`,
+        [id_grupo]
+      )
 
       return NextResponse.json({
         success: true,
-        message: 'Grupo eliminado exitosamente'
+        message: 'Grupo y sus registros eliminados exitosamente'
       }, { headers: corsHeaders })
 
     } finally {
