@@ -56,42 +56,34 @@ export async function POST(request) {
       mxn_por_min,
       mxn_por_hora,
       num_capturas,
-      // Mejor tarifa
       mejor_tarifa_monto,
       mejor_tarifa_km,
       mejor_tarifa_min,
       mejor_tarifa_captura,
-      // Mejor km
       mejor_km_monto,
       mejor_km_km,
       mejor_km_tarifa,
       mejor_km_captura,
-      // Mejor hora
       mejor_hora_monto,
       mejor_hora_min,
       mejor_hora_tarifa,
       mejor_hora_captura,
-      // Ruta corta
       ruta_corta_km,
       ruta_corta_monto,
       ruta_corta_min,
       ruta_corta_captura,
-      // Ruta larga
       ruta_larga_km,
       ruta_larga_monto,
       ruta_larga_min,
       ruta_larga_captura,
-      // Viaje rápido
       viaje_rapido_min,
       viaje_rapido_monto,
       viaje_rapido_km,
       viaje_rapido_captura,
-      // Viaje lento
       viaje_lento_min,
       viaje_lento_monto,
       viaje_lento_km,
       viaje_lento_captura,
-      // Mejor ratio
       mejor_ratio_monto,
       mejor_ratio_km,
       mejor_ratio_min,
@@ -110,7 +102,6 @@ export async function POST(request) {
     const connection = await db.getConnection()
 
     try {
-      // 1. Guardar el viaje en viajes_registrados
       console.log('📝 Guardando viaje en historial...')
       const [resultViaje] = await connection.execute(
         `INSERT INTO viajes_registrados 
@@ -122,7 +113,6 @@ export async function POST(request) {
       const id_viaje = resultViaje.insertId
       console.log('✅ Viaje guardado con ID:', id_viaje)
 
-      // 2. Guardar el análisis detallado
       console.log('📊 Guardando análisis detallado...')
       await connection.execute(
         `INSERT INTO analisis_detallado (

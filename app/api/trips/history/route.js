@@ -11,6 +11,7 @@ const corsHeaders = {
 }
 
 export async function OPTIONS(request) {
+  console.log('✅ OPTIONS /trips/history')
   return NextResponse.json({}, { headers: corsHeaders })
 }
 
@@ -19,7 +20,6 @@ function verifyToken(request) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null
   }
-
   const token = authHeader.substring(7)
   try {
     return jwt.verify(token, JWT_SECRET)
@@ -30,58 +30,105 @@ function verifyToken(request) {
 
 export async function GET(request) {
   try {
+    console.log('═══════════════════════════')
+    console.log('📜 GET HISTORY REQUEST')
+    
     const decoded = verifyToken(request)
     if (!decoded) {
-      return NextResponse.json({
-        success: false,
-        error: 'Token inválido'
-      }, { status: 401, headers: corsHeaders })
+      console.log('❌ Token inválido')
+      return NextResponse.json(
+        { success: false, error: 'Token inválido' },
+        { status: 401, headers: corsHeaders }
+      )
     }
+
+    console.log('✅ Usuario autenticado:', decoded.id)
 
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '100')
 
+    console.log(`🔍 Buscando últimos ${limit} viajes del usuario ${decoded.id}`)
+
     const connection = await db.getConnection()
 
     try {
-      // IMPORTANTE: MySQL no acepta LIMIT como prepared statement, hay que interpolarlo directamente
       const [viajes] = await connection.execute(
         `SELECT 
-          vr.id_viaje,
-          vr.monto,
-          vr.km_total,
-          vr.min_total,
-          vr.mxn_por_km,
-          vr.mxn_por_min,
-          vr.mxn_por_hora,
-          DATE_FORMAT(vr.fecha, '%Y-%m-%d %H:%i:%s') as fecha,
-          ag.id_grupo,
-          gc.nombre_grupo,
-          ag.num_capturas
-         FROM viajes_registrados vr
-         LEFT JOIN analisis_grupos ag ON vr.id_usuario = ag.id_usuario 
-           AND ABS(TIMESTAMPDIFF(SECOND, vr.fecha, ag.fecha_analisis)) < 5
-         LEFT JOIN grupos_capturas gc ON ag.id_grupo = gc.id_grupo
-         WHERE vr.id_usuario = ?
-         ORDER BY vr.fecha DESC
-         LIMIT ${limit}`,
-        [decoded.id]
+          v.id_viaje,
+          v.monto,
+          v.km_total,
+          v.min_total,
+          v.mxn_por_km,
+          v.mxn_por_min,
+          v.mxn_por_hora,
+          v.fecha,
+          v.id_grupo,
+          v.num_capturas,
+          g.nombre_grupo,
+          a.mejor_tarifa_monto,
+          a.mejor_tarifa_km,
+          a.mejor_tarifa_min,
+          a.mejor_tarifa_captura,
+          a.mejor_km_monto,
+          a.mejor_km_km,
+          a.mejor_km_tarifa,
+          a.mejor_km_captura,
+          a.mejor_hora_monto,
+          a.mejor_hora_min,
+          a.mejor_hora_tarifa,
+          a.mejor_hora_captura,
+          a.ruta_corta_km,
+          a.ruta_corta_monto,
+          a.ruta_corta_min,
+          a.ruta_corta_captura,
+          a.ruta_larga_km,
+          a.ruta_larga_monto,
+          a.ruta_larga_min,
+          a.ruta_larga_captura,
+          a.viaje_rapido_min,
+          a.viaje_rapido_monto,
+          a.viaje_rapido_km,
+          a.viaje_rapido_captura,
+          a.viaje_lento_min,
+          a.viaje_lento_monto,
+          a.viaje_lento_km,
+          a.viaje_lento_captura,
+          a.mejor_ratio_monto,
+          a.mejor_ratio_km,
+          a.mejor_ratio_min,
+          a.mejor_ratio_valor,
+          a.mejor_ratio_captura
+        FROM viajes_registrados v
+        LEFT JOIN grupos_capturas g ON v.id_grupo = g.id_grupo
+        LEFT JOIN analisis_detallado a ON v.id_viaje = a.id_viaje
+        WHERE v.id_usuario = ?
+        ORDER BY v.fecha DESC
+        LIMIT ?`,
+        [decoded.id, limit]
       )
 
-      return NextResponse.json({
-        success: true,
-        data: viajes
-      }, { headers: corsHeaders })
+      console.log(`✅ ${viajes.length} viajes encontrados`)
+      console.log('═══════════════════════════')
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Historial obtenido exitosamente',
+          data: viajes
+        },
+        { headers: corsHeaders }
+      )
 
     } finally {
       connection.release()
     }
 
   } catch (error) {
-    console.error('Error al obtener historial:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Error del servidor'
-    }, { status: 500, headers: corsHeaders })
+    console.error('❌ Error al obtener historial:', error)
+    console.log('═══════════════════════════')
+    return NextResponse.json(
+      { success: false, error: 'Error del servidor: ' + error.message },
+      { status: 500, headers: corsHeaders }
+    )
   }
 }
