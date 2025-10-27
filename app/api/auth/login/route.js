@@ -19,12 +19,12 @@ export async function OPTIONS(request) {
 
 export async function POST(request) {
   try {
-    const { email, password, device_id } = await request.json()
+    const { email, password } = await request.json()
 
-    if (!email || !password || !device_id) {
+    if (!email || !password) {
       return NextResponse.json({
         success: false,
-        error: 'Datos incompletos'
+        error: 'Email y contraseña son requeridos'
       }, { status: 400, headers: corsHeaders })
     }
 
@@ -72,16 +72,21 @@ export async function POST(request) {
         { expiresIn: '30d' }
       )
 
+      // Verificar si tiene device_id registrado
+      const device_registered = usuario.device_id && usuario.device_id.trim() !== ''
+
       return NextResponse.json({
         success: true,
         message: 'Login exitoso',
         data: {
           token,
+          device_registered, // true si ya tiene device, false si no
           usuario: {
             id_usuario: usuario.id_usuario,
             nombre_completo: usuario.nombre_completo,
             email: usuario.email,
-            telefono: usuario.telefono
+            telefono: usuario.telefono,
+            device_id: usuario.device_id || null
           }
         }
       }, { headers: corsHeaders })
