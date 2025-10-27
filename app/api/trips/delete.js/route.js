@@ -1,6 +1,3 @@
-// app/api/trips/delete/route.js
-// REEMPLAZA TODO EL ARCHIVO CON ESTO:
-
 import { NextResponse } from 'next/server'
 import db from '@/_DB/db'
 import jwt from 'jsonwebtoken'
@@ -14,6 +11,7 @@ const corsHeaders = {
 }
 
 export async function OPTIONS(request) {
+  console.log('✅ OPTIONS /trips/delete')
   return NextResponse.json({}, { headers: corsHeaders })
 }
 
@@ -22,7 +20,6 @@ function verifyToken(request) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null
   }
-
   const token = authHeader.substring(7)
   try {
     return jwt.verify(token, JWT_SECRET)
@@ -31,11 +28,10 @@ function verifyToken(request) {
   }
 }
 
-// ✅ CAMBIAR A POST EN LUGAR DE DELETE
 export async function POST(request) {
   try {
     console.log('═══════════════════════════')
-    console.log('🗑️ DELETE TRIP REQUEST')
+    console.log('🗑️ DELETE TRIP REQUEST - POST')
     
     const decoded = verifyToken(request)
     if (!decoded) {
@@ -49,7 +45,7 @@ export async function POST(request) {
     console.log('✅ Usuario autenticado:', decoded.id)
 
     const body = await request.json()
-    console.log('📥 Body recibido:', body)
+    console.log('📥 Body recibido:', JSON.stringify(body))
 
     const id_viaje = body.id_viaje
 
@@ -61,7 +57,7 @@ export async function POST(request) {
       )
     }
 
-    console.log(`🔍 Verificando viaje ${id_viaje} del usuario ${decoded.id}`)
+    console.log(`🔍 Buscando viaje ${id_viaje} del usuario ${decoded.id}`)
 
     const connection = await db.getConnection()
 
