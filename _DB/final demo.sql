@@ -651,3 +651,83 @@ CREATE TABLE IF NOT EXISTS viajes_registrados (
 -- Verificar que se creó
 SELECT 'Tabla viajes_registrados creada exitosamente' AS mensaje;
 SHOW CREATE TABLE viajes_registrados;
+
+
+-- Ejecuta esto en tu MySQL para crear la tabla de análisis detallado
+
+USE defaultdb;
+
+-- Tabla para guardar el análisis detallado de cada viaje
+CREATE TABLE IF NOT EXISTS analisis_detallado (
+    id_analisis INT AUTO_INCREMENT PRIMARY KEY,
+    id_viaje INT NOT NULL,
+    id_usuario INT NOT NULL,
+    
+    -- Totales generales
+    ganancia_total DECIMAL(10, 2) NOT NULL,
+    km_total DECIMAL(10, 2) NOT NULL,
+    min_total INT NOT NULL,
+    mxn_por_km DECIMAL(10, 2) NOT NULL,
+    mxn_por_min DECIMAL(10, 2) NOT NULL,
+    mxn_por_hora DECIMAL(10, 2) NOT NULL,
+    
+    -- Mejor tarifa (el viaje que más ganó)
+    mejor_tarifa_monto DECIMAL(10, 2),
+    mejor_tarifa_km DECIMAL(10, 2),
+    mejor_tarifa_min INT,
+    mejor_tarifa_captura INT,
+    
+    -- Mejor $/km
+    mejor_km_monto DECIMAL(10, 2),
+    mejor_km_km DECIMAL(10, 2),
+    mejor_km_tarifa DECIMAL(10, 2),
+    mejor_km_captura INT,
+    
+    -- Mejor $/hora
+    mejor_hora_monto DECIMAL(10, 2),
+    mejor_hora_min INT,
+    mejor_hora_tarifa DECIMAL(10, 2),
+    mejor_hora_captura INT,
+    
+    -- Ruta más corta
+    ruta_corta_km DECIMAL(10, 2),
+    ruta_corta_monto DECIMAL(10, 2),
+    ruta_corta_min INT,
+    ruta_corta_captura INT,
+    
+    -- Ruta más larga
+    ruta_larga_km DECIMAL(10, 2),
+    ruta_larga_monto DECIMAL(10, 2),
+    ruta_larga_min INT,
+    ruta_larga_captura INT,
+    
+    -- Viaje más rápido
+    viaje_rapido_min INT,
+    viaje_rapido_monto DECIMAL(10, 2),
+    viaje_rapido_km DECIMAL(10, 2),
+    viaje_rapido_captura INT,
+    
+    -- Viaje más lento
+    viaje_lento_min INT,
+    viaje_lento_monto DECIMAL(10, 2),
+    viaje_lento_km DECIMAL(10, 2),
+    viaje_lento_captura INT,
+    
+    -- Mejor eficiencia (mejor ratio ganancia/km)
+    mejor_ratio_monto DECIMAL(10, 2),
+    mejor_ratio_km DECIMAL(10, 2),
+    mejor_ratio_min INT,
+    mejor_ratio_valor DECIMAL(10, 2),
+    mejor_ratio_captura INT,
+    
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (id_viaje) REFERENCES viajes_registrados(id_viaje) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    
+    INDEX idx_viaje (id_viaje),
+    INDEX idx_usuario (id_usuario)
+);
+
+-- Verificar que se creó
+SELECT 'Tabla analisis_detallado creada exitosamente' AS mensaje;
