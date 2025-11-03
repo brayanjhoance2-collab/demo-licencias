@@ -131,7 +131,7 @@ export async function POST(request) {
     console.error('Error al validar licencia:', error)
     return NextResponse.json({
       success: false,
-      error: 'Error del servidor'
+      error: 'Problemas en el servidor'
     }, { status: 500, headers: corsHeaders })
   }
 }
